@@ -1,3 +1,10 @@
+
+<LatestMasterVersion>1.0.0.master<_LatestMasterVersion_>
+<LatestMasterURL>https://github.com/ColoGISpro/CTS-DITools/archive/v1.0.0.master.zip<_LatestMasterURL_>
+
+
+
+# Old Vars that can be delete later
 {StartIndex_DITVersion4Master}1.0.0{EndIndex_DITVersion4Master} 
 {StartIndex_DownloadURLMaster}URL to come later {EndIndex_DownloadURLMaster} 
 
