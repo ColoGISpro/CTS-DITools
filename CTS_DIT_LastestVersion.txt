@@ -1,6 +1,6 @@
 
-<masterVersion>1.1.0.master<_masterVersion_>
-<masterURL>https://github.com/ColoGISpro/CTS-DITools/archive/v1.0.0.master.zip<_masterURL_>
+<masterVersion>1.2.5.master<_masterVersion_>
+<masterURL>https://github.com/ColoGISpro/CTS-DITools/archive/fakeItTillYouMakeITLatest.zip<_masterURL_>
 
 
 
