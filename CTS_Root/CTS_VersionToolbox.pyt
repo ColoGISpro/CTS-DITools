@@ -1,8 +1,12 @@
 #-------------------------------------------------------------------------------
-# version: 1.1.1.master
+# version: 1.1.2.master
 # Changes since last version:
-#   added header
-#   updated LastestVersionText to 1.1.1.master
+#   1)CTS_VersionToolbox.pyt update tool is now functional!
+#       1)debugged def downloadExtractCleanUpdate
+#       2)add ugly Tool Logic and flow control @ line 500 for testing purposes
+#       2)repaced numerous (but not all) print statements with arcpy.AddMessage
+#
+#   2)updated CTS_Root\Workspace\docs\LocalVersion.txt = 1.1.2.master
 #
 #-------------------------------------------------------------------------------
 import arcpy, os, time
@@ -132,7 +136,7 @@ class Update(object):
 
     def execute(self, parameters, messages):
         """The source code of the tool."""
-        import ctypes, shutil, urllib2, socket, glob
+        import ctypes, shutil, urllib, urllib2, socket, glob, zipfile
 
 
         def checkInternetConnection():
@@ -353,53 +357,64 @@ class Update(object):
                     base_dir=os.path.basename(CTS_RootFolderPath),
                     verbose=0, dry_run=0, owner=None, group=None, logger=None)
                 print 'Successfully created: ' + NewZipFilePath
+                arcpy.AddMessage("Successfully backed up: = {}".format(CTS_RootFolderPath))
+                arcpy.AddMessage("As a zip file here = {}".format(NewZipFilePath))
+
                 return True
             except:
-                print 'Error atempting to create: '+ NewZipFilePath
+                arcpy.AddMessage("Error backed up: = {}".format(CTS_RootFolderPath))
+                arcpy.AddMessage("As a zip file here = {}".format(NewZipFilePath))
                 return False
 
 
-        def DownloadExtractCleanUpdate (ZipURL, RootFolder):
+        def downloadExtractCleanUpdate (ZipURL, RootFolder):
             #Create local vars
             TimeAsString = time.strftime('%Y_%m%d_%H%M')
-            print 'TimeAsString: ' +TimeAsString
-
+            arcpy.AddMessage("TimeAsString = {}".format(TimeAsString))
             HomeFolder = os.path.dirname(RootFolder)
-            print 'HomeFolder: ' + HomeFolder
-
+            arcpy.AddMessage("HomeFolder = {}".format(HomeFolder))
             WorkspaceFolder = os.path.join(RootFolder, 'Workspace')
-            print 'WorkspaceFolder: ' + WorkspaceFolder
+            arcpy.AddMessage("WorkspaceFolder = {}".format(WorkspaceFolder))
 
             try:
                 TempWorkingPath = os.path.join(HomeFolder, str('tmp_' +TimeAsString))
                 os.mkdir(TempWorkingPath)
                 print 'Created: TempWorkingPath: ' + TempWorkingPath
+                arcpy.AddMessage("Created: TempWorkingPath = {}".format(TempWorkingPath))
             except:
                 os.remove(TempWorkingPath)
                 print 'Deleted old: ' + TempWorkingPath
+                arcpy.AddMessage("Deleted old: = {}".format(TempWorkingPath))
                 os.mkdir(TempWorkingPath)
                 print 'Created new: ' + TempWorkingPath
+                arcpy.AddMessage("Created new:  = {}".format(TempWorkingPath))
 
 
             NewZipFileName = 'CTS-Tools_DWNLD_' + TimeAsString  +'.zip'
             print 'NewZipFileName: ' + NewZipFileName
+            arcpy.AddMessage("NewZipFileName: = {}".format(NewZipFileName))
 
             NewZipPath = os.path.join(TempWorkingPath, NewZipFileName)
             print 'NewZipPath: ' + NewZipPath
+            arcpy.AddMessage("NewZipPath = {}".format(NewZipPath))
 
             try:
                 x = urllib.urlretrieve(ZipURL, NewZipPath)
                 print 'downloaded zip from: ' + ZipURL
+                arcpy.AddMessage("downloaded zip from: {}".format(ZipURL))
             except:
                 print 'error downloading zip from: ' + ZipURL
+                arcpy.AddMessage("error downloading zip from {}".format(ZipURL))
 
             try:
                 z = zipfile.ZipFile(NewZipPath)
                 z.extractall(TempWorkingPath)
                 z.close()
                 print 'Extracted zip to: ' + TempWorkingPath
+                arcpy.AddMessage("Extracted zip to:= {}".format(TempWorkingPath))
             except:
                 print 'ERROR:  Extracting zip to: ' + TempWorkingPath
+                arcpy.AddMessage("ERROR:  Extracting zip to: = {}".format(TempWorkingPath))
 
 
             #find the CTS_Root folder that was just extracted in the temp folder
@@ -409,15 +424,20 @@ class Update(object):
                 CurrentTempDirName = os.path.basename(root)
                 if CurrentTempDirName == 'CTS_Root':
                     NewRootFolder = root
-                    print 'found CTS_root folder:'
-                    print root
+                    arcpy.AddMessage("Found NewRootFolder: = {}".format(NewRootFolder))
             if NewRootFolder == '':
                 print 'ERROR: the extrated folder does not seem to have a CTS_Root folder????'
+                arcpy.AddMessage("ERROR: the extrated folder does not seem to have a CTS_Root folder within: =".format(TempWorkingPath))
 
-            NewHomeFolder = os.path.dirname(NewRootFolder)
-            print 'NewHomeFolder: ' + NewHomeFolder
+            try:
+                NewHomeFolder = os.path.dirname(NewRootFolder)
+                arcpy.AddMessage('NewHomeFolder = {}'.format(NewHomeFolder))
+                NewWorkspaceFolder = os.path.join(NewRootFolder,'Workspace')
+                arcpy.AddMessage("NewWorkspaceFolder:= {}".format(NewWorkspaceFolder))
+            except:
+                arcpy.AddMessage("ERROR setting paths relitive to ={}".format(NewHomeFolder))
 
-            NewWorkspaceFolder = os.path.join(NewRootFolder,'Workspace')
+
             print 'NewWorkspaceFolder: ' + NewWorkspaceFolder
 
             #Delete Workspace folder and CTS_Tools.tbx from CTS_Root folder so new assets can be copied there
@@ -441,6 +461,13 @@ class Update(object):
                     print 'Obbliteration of: '+ ToolboxPathOld
                 except:
                     print 'ERROR: deleting: ' +  ToolboxPathOld
+            try:
+                VersionToolboxPath = os.path.join(RootFolder,'CTS_VersionToolbox.pyt')
+                os.remove(VersionToolboxPath)
+                print 'Obbliteration of: '+ VersionToolboxPath
+            except:
+                print 'ERROR: deleting: ' + VersionToolboxPath
+
             #Copy updated files from temp CTS_Root to real path
 
             shutil.copytree(NewWorkspaceFolder, WorkspaceFolder)
@@ -448,35 +475,15 @@ class Update(object):
             print 'to: ' + WorkspaceFolder
 
             NewToolboxPath = os.path.join(NewRootFolder,'CTS_Toolbox.tbx')
-
             shutil.copy2(NewToolboxPath, ToolboxPath)
             print 'Copied: ' + NewToolboxPath
             print 'to: ' + ToolboxPath
 
-            # Copy new update toolbox if filename changed
-            NewVersionManagerToolbox = glob.glob(NewHomeFolder +'\\*.tbx')
-            NewVersionManagerToolboxPath = NewVersionManagerToolbox[0]
-            print 'NewVersionManagerToolboxPath: ' + NewVersionManagerToolboxPath
-            NewToolboxName = os.path.basename(NewVersionManagerToolboxPath)
-            LocalVersionManagerToolboxPath = os.path.join(HomeFolder,NewToolboxName)
-            print 'LocalVersionManagerToolboxPath: ' + LocalVersionManagerToolboxPath
-            DoesLocalTooboxExist = os.path.exists(LocalVersionManagerToolboxPath)
-            print 'DoesLocalTooboxExist: '
-            print DoesLocalTooboxExist
 
-            if DoesLocalTooboxExist:
-                print 'it does exist so do nothing'
-            else:
-                OldVersionManagerToolbox = glob.glob(HomeFolder +'\\*.tbx')
-                if OldVersionManagerToolbox == []:
-                    print 'no need to promt user to delete becasue no toolbox current exists in HomeFolder'
-                else:
-                    OldVersionManagerToolboxPath = OldVersionManagerToolbox[0]
-                    print 'promt use to delete: ' + OldVersionManagerToolboxPath
-
-                shutil.copy2(NewVersionManagerToolboxPath, LocalVersionManagerToolboxPath)
-                print 'Copied: '  + NewVersionManagerToolboxPath
-                print 'To:     '  + LocalVersionManagerToolboxPath
+            NewVersionToolboxPath = os.path.join(NewRootFolder,'CTS_VersionToolbox.pyt')
+            shutil.copy2(NewVersionToolboxPath, VersionToolboxPath)
+            print 'Copied: '  + NewVersionToolboxPath
+            print 'To:     '  + VersionToolboxPath
 
 
 
@@ -487,7 +494,9 @@ class Update(object):
                 print 'Obbbblitttteration of: ' + TempWorkingPath
             except:
                 print 'ERROR: deleting: ' +  TempWorkingPath
+            return True
 
+        # Update Tool Logic and flow control for testing purposes only
 
         #Set variable from parameters
         CTS_RootFolder      = parameters[0].valueAsText
@@ -509,7 +518,6 @@ class Update(object):
         arcpy.AddMessage("Value of BackupZipFileName = {}".format(BackupZipFileName))
         arcpy.AddMessage("Value of FullZipFilePath  = {}".format(FullZipFilePath ))
         arcpy.AddMessage("Value of LatestVersionTxtURL = {}".format(LatestVersionTxtURL))
-
         arcpy.AddMessage("Value of LatestList = {}".format(LatestList))
         arcpy.AddMessage("Value of LatestVersion = {}".format(LatestVersion))
         arcpy.AddMessage("Value of LatestDownloadURL = {}".format(LatestDownloadURL))
@@ -521,8 +529,18 @@ class Update(object):
         arcpy.AddMessage("Value of promptUserForNextStepResult = {}".format(promptUserForNextStepResult))
 
         if promptUserForNextStepResult:
-            arcpy.AddMessage('GO1!')
-            backupCTSData(CTS_RootFolder,FullZipFilePath)
+            arcpy.AddMessage('User Said UPDATE!')
+            if backupCTSData(CTS_RootFolder,FullZipFilePath):
+                arcpy.AddMessage("Created Zip achive = {}".format(FullZipFilePath))
+                arcpy.AddMessage("Backing up CTS_Root = {}".format(CTS_RootFolder))
+        if downloadExtractCleanUpdate(LatestDownloadURL, CTS_RootFolder):
+            arcpy.AddMessage("SUCCESS updating to {}".format(LatestVersion)+"!!!!!!!!!!!!!!!!!!!!")
+
+
+
+
+
+
 
 
 
