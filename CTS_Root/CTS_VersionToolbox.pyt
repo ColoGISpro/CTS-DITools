@@ -1,3 +1,10 @@
+#-------------------------------------------------------------------------------
+# version: 1.1.1.master
+# Changes since last version:
+#   added header
+#   updated LastestVersionText to 1.1.1.master
+#
+#-------------------------------------------------------------------------------
 import arcpy, os, time
 
 class Toolbox(object):
@@ -9,14 +16,12 @@ class Toolbox(object):
         # List of tool classes associated with this toolbox
         self.tools = [Update]
 
-
 class Update(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Update"
         self.description = "Update"
         self.canRunInBackground = False
-
 
     def getParameterInfo(self):
         """Define parameter definitions"""
@@ -30,7 +35,6 @@ class Update(object):
         direction="Input")
         param0.value = os.path.dirname(os.path.realpath(__file__))
 
-
         #Second parameter
         param1 = arcpy.Parameter(
         displayName="Local Version",
@@ -42,8 +46,6 @@ class Update(object):
             r"Workspace\docs\LocalVersion.txt")
         with open(TextFilePath) as f:
             param1.value = f.read()
-
-
 
         # Third parameter
         param2 = arcpy.Parameter(
@@ -84,8 +86,6 @@ class Update(object):
         param4.value =  os.path.basename(param0.valueAsText) +'-bu-'+ \
             str(time.strftime('%Y-%m%d-%H%M')) + '.zip'
 
-
-
         # Sixth parameter
         param5 = arcpy.Parameter(
         displayName="FullZipFilePath",
@@ -105,7 +105,6 @@ class Update(object):
         direction="Input")
         param6.value = r'https://raw.githubusercontent.com/ColoGISpro/CTS-DITools/VCS-Vars-Only/CTS_DIT_LastestVersion.txt'
 
-
         params = [param0, param1, param2, param3, param4, param5, param6]
 
         return params
@@ -120,10 +119,7 @@ class Update(object):
         has been changed."""
         parameters[5].value= os.path.join(parameters[3].valueAsText,parameters[4].valueAsText)
 
-##        parameters[4].value = os.path.join(
-##            parameters[2].valueAsText,
-##            parameters[3].valueAsText)
-##        return
+        return
 
     def updateMessages(self, parameters):
         """Modify the messages created by internal validation for each tool
