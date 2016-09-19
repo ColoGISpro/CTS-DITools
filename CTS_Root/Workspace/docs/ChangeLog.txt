@@ -1,3 +1,12 @@
+Commit Title: v1.1.5.master (VCS development)
+version: 1.1.5.master
+
+1) updated CTS_Root\Workspace\docs\LocalVersion.txt = 1.1.5.master
+	for the purpose of testing.
+
+
+#--------------------------------------------------------------
+
 Commit Title: v1.1.4.master (VCS development)
 version: 1.1.4.master
 
