@@ -945,8 +945,11 @@ class UpdateDITools(object):
 
         arcpy.AddMessage("{: <15}{: ^70}{: >15}\n"
         .format('',"The mountains are calling and I must go. - John Muir",''))
+        return #def execute
 
-##
+
+
+##    -------------------------------------   Old flow control for testing-------------------------------------------------
 ##        if checkInternetConnection:
 ##            LatestList = parseVarsFromURL(LatestVersionTxtURL,Build)
 ##        LatestVersion       = LatestList[0]
@@ -974,6 +977,5 @@ class UpdateDITools(object):
 
 
 
-        return #def execute
 
-
+  

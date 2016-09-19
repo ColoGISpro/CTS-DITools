@@ -1,0 +1,64 @@
+##---------------------------------- IntroPrompt --------------------
+x("Updating the CTS Data Integration Tools is a three step process: \n\n1) Backup local data  \n2) Download and extract the lastest DIT version \n3) Migrate local data into DIT workspace   \n\nChoose 'Yes' to begin step 1."," Welcome to CTS DIT update wizzard")
+import ctypes
+def x (Message, Title):
+  MessageBox = ctypes.windll.user32.MessageBoxA
+  returnValue = MessageBox( 0, Message, Title,0x00200000L | 0x00000040L | 0x00000004L  )
+  if returnValue == 6:
+    return 6
+  else:
+    return 0
+
+
+## ----------------------------ConfirmSuccessfulBackup-----------------------------------------------
+
+x(%ReadyToBackup%, r"%DITFoldertPath%", "%NewArchiveName%",  r"%DestinationFolder for Backup%", "\n")
+
+import ctypes, subprocess
+def x (ReadyToUpdate, DataToBackup, NewArchiveName, BUDestination, NewLine ):
+  if ReadyToUpdate == 6:
+    Title = "Step 1 - Backup data"
+    Message = "Please confirm the folder:"+ str(NewLine)
+    Message = str(Message) +  str(DataToBackup) + str(NewLine)+ str(NewLine)
+    Message = str(Message) +  "was successfully archived as a zip here:"+ str(NewLine)
+    Message = str(Message) +  str(BUDestination) + str(NewArchiveName) + ".zip" + str(NewLine)+ str(NewLine)
+    Message = str(Message) + "Choose 'Yes' to continue to step 2."
+    MessageBox = ctypes.windll.user32.MessageBoxA
+    subprocess.Popen('explorer "{0}"'.format(BUDestination))
+    returnValue = MessageBox( 0, Message, Title,0x00200000L | 0x00000040L | 0x00000004L )
+    if returnValue == 6:
+      return 6
+    else:
+      return 0
+  else:
+    return 0
+
+
+
+## ----------------------------VersioningMigrateData----------------------------------------
+import os, filecmp, shutil
+def x(oldroot, newroot):
+  compare_object = filecmp.dircmp (oldroot, newroot,['CTS Toolbox.tbx', 'Read Me.url', 'Workspace',[]])
+  compare_object = filecmp.dircmp (oldroot, newroot)
+  files_to_move = compare_object.left_only
+  for filename in files_to_move:
+    oldfilepath = os.path.join(oldroot, filename)
+    shutil.move(oldfilepath, newroot)
+  return str(files_to_move)
+
+import ctypes, subprocess
+def x (ReadyToMigrate, ListOfMovedFIles, TargetLocation, PathToNewDIT, NewLine, LocalData ):
+  if ReadyToMigrate == 6:
+    Title = "Step 3 - Data Migration Successful"
+    Message = "The following files: " +  str(NewLine)+ str(ListOfMovedFIles) +  str(NewLine)+  str(NewLine)
+    Message = str(Message) + "have been moved"
+    Message = str(Message) + str(NewLine) +"from   " + str(LocalData) 
+    Message = str(Message) + str(NewLine) +"to       " + str(PathToNewDIT)
+    MessageBox = ctypes.windll.user32.MessageBoxA
+    returnValue = MessageBox( 0, Message, Title,0x00200000L | 0x00000040L | 0x00000004L )
+    subprocess.Popen('explorer "{0}"'.format(PathToNewDIT))
+    return 1
+  else:
+    return 0
+  
+## -----------------------------------ConfirmSuccesfulMigation-------------------------------------
