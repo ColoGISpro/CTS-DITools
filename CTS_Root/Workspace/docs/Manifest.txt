@@ -1,0 +1,13 @@
+Please do not move or edit this file.
+
+why you ask?  ...well,  here's the deal:
+This file contains a manifest of files and directories to be removed
+when CTS-DITools get updated. Basically, tweaking with this file could result
+in failure to clean up any files/folders that exist in the CTS_Root during update.
+Especially they are reanmed or omitted in the new version.
+
+tl;dr
+below is a list of files that will get cleaned up during update
+
+<DirectoriesToClean>['Workspace']<_DirectoriesToClean_>
+<FilesToClean>['CTS_Toolbox.tbx', 'CTS_VersionToolbox.pyt', 'CTS_VersionToolbox.pyt.xml', 'CTS_VersionToolbox.Update.pyt.xml', 'Read Me.url']<_FilesToClean_>
