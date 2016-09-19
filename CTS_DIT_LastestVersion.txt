@@ -1,22 +1,6 @@
 
-<masterVersion>1.2.5.master<_masterVersion_>
-<masterURL>https://github.com/ColoGISpro/CTS-DITools/archive/fakeItTillYouMakeITLatest.zip<_masterURL_>
+<masterVersion>1.1.5.master<_masterVersion_>
+<masterURL>https://github.com/ColoGISpro/CTS-DITools/archive/TEST-VersionControlSystem.zip<_masterURL_>
 
 
 
-# Old Vars that can be delete later
-{StartIndex_DITVersion4Master}1.0.0{EndIndex_DITVersion4Master} 
-{StartIndex_DownloadURLMaster}URL to come later {EndIndex_DownloadURLMaster} 
-
-
-{StartIndex_DITVersion4Admin}1.0.0{EndIndex_DITVersion4Admin} 
-{StartIndex_DownloadURL4Admin}URL to come later {EndIndex_DownloadURLAdmin} 
-
-
-{StartIndex_DITVersion4Direct}1.0.0{EndIndex_DITVersion4Direct} 
-{StartIndex_DownloadURL4Direct}URL to come later {EndIndex_DownloadURL4Direct} 
-
-{StartIndex_DITVersion4Active}1.0.0{EndIndex_DITVersion4Active} 
-{StartIndex_DownloadURL4Active}URL to come later {EndIndex_DownloadURL4Active}
-
-Last Updated by Eric Drummond 2016/08/05 20:42
