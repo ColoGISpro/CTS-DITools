@@ -1,0 +1,73 @@
+Commit Title: v1.1.4.master (VCS development)
+version: 1.1.4.master
+
+1) Cleaned upCTS_Root\CTS_Toolbox.tbx\zSubtools\
+DELETED:
+	Model1
+	Model3
+	VersioningBackupData
+	VersioningCheckCurrentVersionWizzard
+	VersioningDownloadExtract
+	VersioningMigrateData
+	VersioningParseVarsFromURL1of2
+	VersioningParseVarsFromURL2of2
+	VersioningParseStandardFolders
+	VersioningWriteCTSRootPathToFile
+	VersioningWizzard - (copied useful code to CodeSnippet.txt)
+	zGlobalVariablesDITMethodType
+	zGlobalVariablesDITUpdateVars
+	zGlobalVariablesDITMethodType
+
+Note: any useful code from the above tools has been copied to:
+	CTS_Root\Workspace\Scripts\CodeSnippet.txt
+
+2) added the following note to: zGlobalVariables (old version contral tool. See note in tool)
+	This is an old versioning system that create other tools are still dependent upon.
+	It is keep here for backwards compatibility. Future versions will phase this tool ou once
+	the dependent models are edited to use the new version control new version control string format of: MAJOR.MINOR.PATCH.BUILD
+	Until then this tool will be kept in sync with the new version control system using the following formatting as an example: 
+		1.2.3.master = 1.23
+		2.3.4.direct = 2.34
+
+3) updated CTS_Root\Workspace\docs\LocalVersion.txt = 1.1.4.master
+
+#-----------------------------------------------------------------------------
+
+
+Commit Title: v1.1.3.master (VCS development)
+version: 1.1.3.master
+
+1) Created three new 'print' functions that provide user feedback on to progress
+via ArcGIS's  dialog box and geoprocessing history as the tool progress
+	-printException
+   	-printFunctionInfoStart
+   	-printFunctionInfoEnd
+
+2) functionsUpdated = [checkInternetConnection, checkInternetConnection,
+	parseVarsFromURL, checkVersion, promptUserForNextStep,
+	backupCTSData, downloadExtractCleanUpdate] (renamed -->downloadCleanInstall)
+
+3) for code in functionsUpdated:
+   	-integrated new print functions
+   	-replaced 'print' statements w/ arcpy.AddMessage(), AddWarning(), AddError()
+   	-improved error handling
+
+4) Overhauled downloadExtractCleanUpdate function
+	-renamed downloadCleanInstall
+ 	-updated workflow of how assests are removed during update to
+		ensure user data will never be unintentionally deleted.
+ 
+5) updated CTS_Root\Workspace\docs\LocalVersion.txt = 1.1.3.master
+6) Implemented updateMissionControl Function
+
+#-------------------------------------------------------------------------------------
+Commit Title:  v1.1.2.master (VCS development)
+version: 1.1.2.master
+
+1)CTS_VersionToolbox.pyt update tool is now functional! whoo hooo
+2)debugged def downloadExtractCleanUpdate
+3)add ugly Tool Logic and flow control @ line 500 for testing purposes
+4)repaced numerous (but not all) print statements with arcpy.AddMessage
+5)updated CTS_Root\Workspace\docs\LocalVersion.txt = 1.1.2.master
+
+#-------------------------------------------------------------------------------------
